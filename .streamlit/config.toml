@@ -1,0 +1,15 @@
+# Tema visual de Match Music: paleta tomada del logo del Brief.
+[theme]
+base = "light"
+primaryColor = "#E30613"            # rojo del globo
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#FFF6CC" # amarillo muy suave (fondos de inputs/expanders)
+textColor = "#000000"
+
+[theme.sidebar]
+backgroundColor = "#FFD400"          # amarillo de las líneas del globo
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#000000"
+
+[client]
+toolbarMode = "minimal"

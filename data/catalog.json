@@ -1,0 +1,24 @@
+{
+  "version": "0.1",
+  "nota": "Catálogo de PRUEBA cargado manualmente por el Grupo A. Años = año de lanzamiento del álbum/sencillo original. Géneros y subgéneros pendientes de verificación contra las fuentes del Brief §9 (Spotify Global Music Dataset, Worldwide Music Artists Dataset, MGD).",
+  "canciones": [
+    {"id": "C01", "titulo": "Persiana americana", "artista": "Soda Stereo", "genero": "rock", "subgenero": "new wave", "anio": 1986, "pais": "Argentina", "idioma": "español"},
+    {"id": "C02", "titulo": "De música ligera", "artista": "Soda Stereo", "genero": "rock", "subgenero": "rock en español", "anio": 1990, "pais": "Argentina", "idioma": "español"},
+    {"id": "C03", "titulo": "Mil horas", "artista": "Los Abuelos de la Nada", "genero": "rock", "subgenero": "rock nacional", "anio": 1983, "pais": "Argentina", "idioma": "español"},
+    {"id": "C04", "titulo": "Tren al sur", "artista": "Los Prisioneros", "genero": "rock", "subgenero": "rock en español", "anio": 1990, "pais": "Chile", "idioma": "español"},
+    {"id": "C05", "titulo": "La flaca", "artista": "Jarabe de Palo", "genero": "rock", "subgenero": "pop rock", "anio": 1996, "pais": "España", "idioma": "español"},
+    {"id": "C06", "titulo": "Sweet Child O' Mine", "artista": "Guns N' Roses", "genero": "rock", "subgenero": "hard rock", "anio": 1987, "pais": "Estados Unidos", "idioma": "inglés"},
+    {"id": "C07", "titulo": "Livin' on a Prayer", "artista": "Bon Jovi", "genero": "rock", "subgenero": "hard rock", "anio": 1986, "pais": "Estados Unidos", "idioma": "inglés"},
+    {"id": "C08", "titulo": "Smells Like Teen Spirit", "artista": "Nirvana", "genero": "rock", "subgenero": "grunge", "anio": 1991, "pais": "Estados Unidos", "idioma": "inglés"},
+    {"id": "C09", "titulo": "Bohemian Rhapsody", "artista": "Queen", "genero": "rock", "subgenero": "rock progresivo", "anio": 1975, "pais": "Reino Unido", "idioma": "inglés"},
+    {"id": "C10", "titulo": "Billie Jean", "artista": "Michael Jackson", "genero": "pop", "subgenero": "pop", "anio": 1982, "pais": "Estados Unidos", "idioma": "inglés"},
+    {"id": "C11", "titulo": "Take On Me", "artista": "a-ha", "genero": "pop", "subgenero": "synth-pop", "anio": 1985, "pais": "Noruega", "idioma": "inglés"},
+    {"id": "C12", "titulo": "99 Luftballons", "artista": "Nena", "genero": "pop", "subgenero": "new wave", "anio": 1983, "pais": "Alemania", "idioma": "alemán"},
+    {"id": "C13", "titulo": "Rolling in the Deep", "artista": "Adele", "genero": "pop", "subgenero": "soul pop", "anio": 2010, "pais": "Reino Unido", "idioma": "inglés"},
+    {"id": "C14", "titulo": "Blinding Lights", "artista": "The Weeknd", "genero": "pop", "subgenero": "synth-pop", "anio": 2019, "pais": "Canadá", "idioma": "inglés"},
+    {"id": "C15", "titulo": "La Bicicleta", "artista": "Carlos Vives y Shakira", "genero": "pop", "subgenero": "pop latino", "anio": 2016, "pais": "Colombia", "idioma": "español"},
+    {"id": "C16", "titulo": "Despacito", "artista": "Luis Fonsi ft. Daddy Yankee", "genero": "urbano latino", "subgenero": "reggaeton", "anio": 2017, "pais": "Puerto Rico", "idioma": "español"},
+    {"id": "C17", "titulo": "Tusa", "artista": "Karol G y Nicki Minaj", "genero": "urbano latino", "subgenero": "reggaeton", "anio": 2019, "pais": "Colombia", "idioma": "español"},
+    {"id": "C18", "titulo": "Libertango", "artista": "Astor Piazzolla", "genero": "tango", "subgenero": "tango nuevo", "anio": 1974, "pais": "Argentina", "idioma": "instrumental"}
+  ]
+}

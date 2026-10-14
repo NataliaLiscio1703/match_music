@@ -1,0 +1,12 @@
+# Match Music — dependencias (probado con Python 3.13 en Linux y Windows)
+#
+# ⚠ Experta 1.9.4 (última versión, 2019) declara frozendict==1.2 y schema==0.6.7,
+#   que NO compilan en Python >= 3.10. Instalación verificada:
+#
+#     pip install --no-deps experta==1.9.4
+#     pip install -r requirements.txt
+#
+#   Pendiente: resolver esto para el despliegue en Streamlit Cloud.
+frozendict==2.4.7
+schema==0.7.7
+streamlit==1.65.0
