@@ -10,7 +10,8 @@ Sistema basado en conocimiento que recomienda **canciones, artistas y estilos mu
 | **Motor de inferencia** | Experta 1.9.4 (encadenamiento hacia adelante) |
 | **Interfaz** | Streamlit 1.65.0 |
 | **Versión de Python** | 3.13 (requiere 3.10 o superior) |
-| **Sistema operativo** | Windows 10/11 |
+| **Sistema operativo** | Windows 10/11 (local) · Linux (Streamlit Community Cloud) |
+| **App publicada** | _completar con la URL de Streamlit Cloud_ |
 
 ---
 
@@ -40,6 +41,7 @@ match_music\
 ├── .streamlit\config.toml
 ├── assets\logo.png
 ├── data\catalog.json
+├── experta\          (motor de inferencia incluido)
 ├── src\
 │   ├── __init__.py
 │   ├── engine.py
@@ -66,10 +68,6 @@ Al terminar tiene que aparecer, entre otras cosas, el caso **«Rock de los 80»*
 
 > **Si Windows muestra «Windows protegió su PC»:** hacé clic en **«Más información»** y después en **«Ejecutar de todas formas»**. Aparece porque el archivo vino de internet. Si querés ver qué hace antes de ejecutarlo, abrilo con el Bloc de notas: son unas pocas líneas comentadas.
 
-> **Aviso esperado:** durante la instalación puede aparecer en rojo
-> `experta 1.9.4 requires schema==0.6.7, but you have schema 0.7.7 which is incompatible.`
-> **Ignoralo.** Es justamente la versión moderna que necesitamos (ver [por qué](#por-qué-experta-se-instala-distinto)).
-
 ### Paso 4. Abrir la aplicación (doble clic)
 
 Hacé **doble clic en `iniciar.bat`**. A los pocos segundos se abre el navegador con la app en **http://localhost:8501**. Si no se abre solo, copiá esa dirección en el navegador.
@@ -86,7 +84,6 @@ Si preferís no usar los `.bat`, o si fallan, abrí PowerShell **en la carpeta d
 
 ```powershell
 python -m venv .venv
-.venv\Scripts\python.exe -m pip install --no-deps experta==1.9.4
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 .venv\Scripts\python.exe demo.py
 .venv\Scripts\python.exe -m streamlit run app.py
@@ -108,7 +105,7 @@ La primera vez, Streamlit puede pedir un email en la ventana: apretá **Enter** 
 | Escribir `python` abre la Microsoft Store | Windows tiene un acceso directo falso a Python | Instalá Python desde python.org (paso 1). |
 | La ventana negra se abre y se cierra enseguida | Un error antes de la pausa | Abrí PowerShell en la carpeta y ejecutá `.\instalar.bat` para ver el mensaje. |
 | `[ERROR] Fallo la instalacion de librerias` | Sin internet, o carpeta dentro de OneDrive | Revisá la conexión, mové la carpeta fuera de OneDrive, borrá la carpeta `.venv` y ejecutá `instalar.bat` otra vez. |
-| Error que menciona `frozendict` | Se instaló Experta de la forma común | Borrá `.venv` y ejecutá `instalar.bat` (o seguí los comandos de la alternativa en ese orden). |
+| `No module named 'experta'` | Falta la carpeta `experta` del proyecto | Verificá que `experta\` esté junto a `app.py` (paso 2). No instales Experta con pip. |
 | `[ERROR] Todavia no esta instalado` al abrir `iniciar.bat` | No se ejecutó la instalación | Doble clic en `instalar.bat` primero. |
 | `ModuleNotFoundError: No module named 'src'` | Se ejecutó desde otra carpeta | Usá los `.bat`, o abrí PowerShell dentro de `match_music`. |
 | `Port 8501 is already in use` | La app ya está abierta en otra ventana | Cerrá la otra ventana negra, o entrá directo a http://localhost:8501. |
@@ -119,14 +116,28 @@ La primera vez, Streamlit puede pedir un email en la ventana: apretá **Enter** 
 
 ---
 
-## Por qué Experta se instala distinto
+## Por qué Experta viene incluida en el repositorio
 
-Experta es la librería del motor de inferencia. Su última versión (1.9.4) es de 2019 y pide versiones viejas de `frozendict` y `schema` que no se instalan en Python 3.10 o superior. Por eso se instala en dos pasos:
+Experta es la librería del motor de inferencia. Su última versión (1.9.4) es de 2019 y declara como dependencias `frozendict==1.2` y `schema==0.6.7`, que **no se instalan en Python 3.10 o superior**. El código de Experta en sí funciona con las versiones actuales de esas librerías.
 
-1. `pip install --no-deps experta==1.9.4` instala Experta **sin** esas dependencias viejas.
-2. `pip install -r requirements.txt` instala versiones actuales de `frozendict` y `schema`, compatibles con Experta, y Streamlit.
+Por eso la carpeta `experta/` contiene el código fuente original de Experta 1.9.4, **sin modificaciones** y con su licencia (LGPL v3), y `requirements.txt` fija versiones modernas de `frozendict` y `schema`. Así la instalación es un único `pip install -r requirements.txt`, que es lo único que ejecuta Streamlit Community Cloud. Detalle en [`experta/VENDORED.md`](experta/VENDORED.md).
 
-Verificado en Python 3.13: el motor ejecuta los 6 casos de `demo.py` con los resultados esperados.
+Verificado en un entorno virtual limpio con Python 3.13: el motor ejecuta los 6 casos de `demo.py` con los resultados esperados y la app levanta sin errores.
+
+---
+
+## Publicación en Streamlit Community Cloud
+
+1. Entrar a [share.streamlit.io](https://share.streamlit.io) con la cuenta de GitHub dueña del repositorio.
+2. **Create app → Deploy a public app from GitHub** y completar:
+   - **Repository:** `NataliaLiscio1703/match_music`
+   - **Branch:** `main`
+   - **Main file path:** `app.py`
+   - **App URL:** el subdominio elegido (por ejemplo `match-music`).
+3. En **Advanced settings → Python version** elegir **3.13** (la versión probada).
+4. **Deploy.** La primera instalación tarda unos minutos. Cada `git push` a `main` vuelve a publicar la app.
+
+No hace falta configurar *secrets*: la app no usa claves ni servicios externos. El tema visual se toma de `.streamlit/config.toml`.
 
 ---
 
@@ -140,6 +151,7 @@ Verificado en Python 3.13: el motor ejecuta los 6 casos de `demo.py` con los res
 | `app.py` | Interfaz Streamlit: recoge preferencias, llama al motor y muestra resultados y explicación. |
 | `demo.py` | Ejecuta casos de prueba por consola, sin interfaz. |
 | `data/catalog.json` | Catálogo de canciones de prueba. |
+| `experta/` | Código de Experta 1.9.4 incluido (ver arriba). No contiene reglas del sistema. |
 | `instalar.bat` / `iniciar.bat` | Instalación y apertura con doble clic en Windows. |
 
 La base de reglas está separada de la interfaz: `app.py` solo usa la función `recomendar()` de `engine.py`.

@@ -35,17 +35,12 @@ if not exist ".venv\Scripts\python.exe" (
     )
 )
 
-REM --- 3. Instalar librerias (Experta primero y sin dependencias) ---
+REM --- 3. Instalar librerias (Experta ya viene incluida en la carpeta experta) ---
 echo  Instalando librerias (puede tardar unos minutos) ...
 ".venv\Scripts\python.exe" -m pip install --upgrade pip --quiet
-".venv\Scripts\python.exe" -m pip install --no-deps experta==1.9.4
-if errorlevel 1 goto error_pip
 ".venv\Scripts\python.exe" -m pip install -r requirements.txt
 if errorlevel 1 goto error_pip
 
-echo.
-echo  NOTA: si arriba aparece en rojo "experta 1.9.4 requires schema==0.6.7",
-echo  es normal y se puede ignorar.
 echo.
 
 REM --- 4. Verificar el motor con los casos de prueba ---
