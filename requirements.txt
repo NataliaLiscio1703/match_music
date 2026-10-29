@@ -1,4 +1,4 @@
-# Match Music — dependencias (probado con Python 3.12 y 3.13 en Linux y Windows)
+# Match Music — dependencias (probado con Python 3.12 y 3.13 en Linux y Windows; revisado 29/10/2026)
 #
 # Experta 1.9.4 (motor de inferencia) NO se instala desde PyPI: está incluida en la
 # carpeta experta/ del repositorio. Motivo: declara frozendict==1.2 y schema==0.6.7,
