@@ -7,6 +7,7 @@ inferencia:
 
     ┌──────────────────────┬───────────────────────────────────────────────┐
     │ Hechos de ENTRADA    │ UserPreferences, Song                         │
+    │ Nivel 0 (validación) │ EntradaInsuficiente                           │
     │ Nivel 1 (contexto)   │ DerivedPreference                             │
     │ Nivel 2 (compatib.)  │ Coincidencia, Descarte                        │
     │ Nivel 3 (decisión)   │ Evaluacion, Recommendation                    │
@@ -47,6 +48,8 @@ class UserPreferences(Fact):
         pais     : str         — país de origen (RF-05)
         local    : bool        — preferencia por música local (RF-06)
         idioma   : str         — idioma del canto (RF-07)
+        artista  : str         — artista o banda de referencia, normalizado (RF-02)
+        cancion  : str         — canción de referencia, normalizada (RF-01)
     """
     pass
 
@@ -64,6 +67,8 @@ class Song(Fact):
     anio = Field(int, mandatory=True)
     pais = Field(str, mandatory=True)        # normalizado
     idioma = Field(str, mandatory=True)      # normalizado ('instrumental' si no tiene canto)
+    artista_n = Field(str, mandatory=True)   # artista normalizado (para comparar con la referencia)
+    titulo_n = Field(str, mandatory=True)    # título normalizado (para comparar con la referencia)
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -78,11 +83,16 @@ class DerivedPreference(Fact):
 
     tipo puede ser:
         'genero'        → estilo pedido explícitamente     (valor=str)
-        'genero_afin'   → estilo relacionado por afinidad  (valor=str, origen=género base)
+        'genero_afin'   → estilo relacionado por afinidad  (valor=str, base=estilo pedido,
+                                                            relacion='afin' | 'padre')
+        'subgenero_vecino' → subgénero vecino de un estilo pedido (valor=str, base=str)
         'rango_anios'   → período temporal                 (desde=int, hasta=int)
         'pais'          → país buscado                     (valor=str)
         'idioma'        → idioma buscado                   (valor=str)
         'contexto'      → concepto compuesto del dominio   (valor='musica_latina' | 'rock_80s')
+        'referencia'    → artista o canción de referencia  (clase='artista' | 'cancion', valor=str)
+        'rasgo_ref'     → rasgo musical de la referencia   (subgenero=str, idioma=str, origen=str)
+        'estilo_vecino_ref' → subgénero vecino de un rasgo de la referencia (valor=str, base=str)
 
     regla  : id de la regla que lo derivó
     cadena : tuple con todas las reglas que llevaron a este hecho,
@@ -173,4 +183,13 @@ class EstiloRecomendado(Fact):
 
 class SinCoincidencia(Fact):
     """Se declara sólo si el motor terminó sin ninguna Recommendation (Brief §7)."""
+    mensaje = Field(str, mandatory=True)
+
+
+class EntradaInsuficiente(Fact):
+    """
+    Nivel 0: la consulta no trae ningún criterio. Se declara ANTES de evaluar
+    el catálogo y detiene el motor (caso de prueba CA-07 del cliente).
+    Es distinto de SinCoincidencia: aquí no hubo nada que evaluar.
+    """
     mensaje = Field(str, mandatory=True)

@@ -18,7 +18,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from src.engine import ERAS, PAIS_LOCAL, cargar_catalogo, recomendar
+from src.engine import ERAS, PAIS_LOCAL, PAISES_CONOCIDOS, cargar_catalogo, recomendar
 from src.tracer import NIVELES, agrupar_por_nivel, legible, mapa_legible, presentar
 
 RAIZ = Path(__file__).resolve().parent
@@ -52,9 +52,15 @@ MAPA = mapa_legible(CATALOGO)
 # Opciones de los selectores, derivadas del catálogo (no hardcodeadas).
 OPCIONES_ESTILO = sorted({c["genero"].capitalize() for c in CATALOGO}
                          | {c["subgenero"].capitalize() for c in CATALOGO})
-OPCIONES_PAIS = sorted({c["pais"] for c in CATALOGO})
+# Países: los del catálogo más una lista base, para poder consultar países sin
+# canciones cargadas (el motor responde "sin coincidencia", caso CA-06).
+OPCIONES_PAIS = sorted({c["pais"] for c in CATALOGO} | set(PAISES_CONOCIDOS))
 OPCIONES_IDIOMA = sorted({c["idioma"].capitalize() for c in CATALOGO})
+OPCIONES_ARTISTA = sorted({c["artista"] for c in CATALOGO}, key=str.casefold)
+OPCIONES_CANCION = sorted({c["titulo"] for c in CATALOGO}, key=str.casefold)
 CUALQUIERA = "Cualquiera"
+NINGUNO = "Ninguno"
+NINGUNA = "Ninguna"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -163,7 +169,7 @@ st.markdown("""
 .n-2,.n-2B{ background:var(--rojo); color:var(--blanco); }
 .n-3{ background:var(--negro); color:var(--amarillo); }
 .n-4{ background:var(--blanco); }
-.n-cierre{ background:#ddd; }
+.n-cierre,.n-0{ background:#ddd; }
 
 /* ── Artistas y estilos ────────────────────────────────────────────────── */
 .mm-stickers{ display:flex; flex-wrap:wrap; gap:.7rem; margin:.4rem 0 1.6rem; }
@@ -210,6 +216,7 @@ st.markdown("""
 VALORES_INICIALES = {
     "f_estilos": [], "f_periodo": "Cualquiera", "f_decada": "80s", "f_anio": 1990,
     "f_pais": CUALQUIERA, "f_local": False, "f_idioma": CUALQUIERA,
+    "f_artista": NINGUNO, "f_cancion": NINGUNA,
 }
 for clave, valor in VALORES_INICIALES.items():
     st.session_state.setdefault(clave, valor)
@@ -221,6 +228,7 @@ EJEMPLOS = {
     "Música local en español": {"f_local": True, "f_idioma": "Español"},
     "Reggaeton": {"f_estilos": ["Reggaeton"]},
     "Synth-pop": {"f_estilos": ["Synth-pop"]},
+    "Parecido a Soda Stereo": {"f_artista": "Soda Stereo"},
 }
 
 
@@ -248,6 +256,10 @@ def entrada_desde_formulario():
         entrada["pais"] = s.f_pais
     if s.f_idioma != CUALQUIERA:
         entrada["idioma"] = s.f_idioma
+    if s.f_artista != NINGUNO:
+        entrada["artista"] = s.f_artista
+    if s.f_cancion != NINGUNA:
+        entrada["cancion"] = s.f_cancion
     return entrada
 
 
@@ -263,6 +275,13 @@ with st.sidebar:
     st.header("¿Qué querés escuchar?")
     st.caption("Completá solo lo que te importe. Lo que dejes vacío no se usa.")
 
+    st.subheader("Algo parecido a…")
+    st.selectbox("Artista o banda de referencia", [NINGUNO] + OPCIONES_ARTISTA, key="f_artista",
+                 help="Recomienda artistas con estilos iguales o vecinos. Podés escribir para buscar.")
+    st.selectbox("Canción de referencia", [NINGUNA] + OPCIONES_CANCION, key="f_cancion",
+                 help="Recomienda canciones con un estilo igual o vecino al de esta canción.")
+
+    st.subheader("Tus preferencias")
     st.multiselect("Estilos", OPCIONES_ESTILO, key="f_estilos",
                    placeholder="Rock, pop, reggaeton…",
                    help="Podés elegir géneros amplios o subgéneros, y combinar varios.")
@@ -271,7 +290,7 @@ with st.sidebar:
     if st.session_state.f_periodo == "Una década":
         st.select_slider("Década", options=list(ERAS), key="f_decada")
     elif st.session_state.f_periodo == "Un año puntual":
-        st.number_input("Año", min_value=1950, max_value=2026, step=1, key="f_anio",
+        st.number_input("Año", min_value=1900, max_value=2026, step=1, key="f_anio",
                         help="Se buscan canciones de ese año, dos antes y dos después.")
     st.selectbox("País de origen", [CUALQUIERA] + OPCIONES_PAIS, key="f_pais")
     st.toggle(f"Priorizar música local ({legible(PAIS_LOCAL, MAPA)})", key="f_local")
@@ -305,7 +324,12 @@ st.markdown(
 
 def html_criterios(entrada):
     """Etiquetas con los criterios usados en la consulta."""
-    chips = list(entrada.get("generos", []))
+    chips = []
+    if entrada.get("artista"):
+        chips.append(f"Parecido a {entrada['artista']}")
+    if entrada.get("cancion"):
+        chips.append(f"Parecido a «{entrada['cancion']}»")
+    chips += list(entrada.get("generos", []))
     if "epoca" in entrada:
         chips.append(f"Década {entrada['epoca']}")
     if "anio" in entrada:
@@ -390,8 +414,21 @@ def mostrar_sin_coincidencia(datos, entrada):
         '</ul></div>',
         unsafe_allow_html=True,
     )
-    if not entrada.get("generos") and len(entrada) <= 1 and not entrada.get("local"):
-        st.info("No elegiste ningún criterio. Completá al menos uno en el panel de la izquierda.")
+
+
+def mostrar_sin_conclusion(datos):
+    """Regla R00: la consulta no trae criterios y el motor no evaluó el catálogo."""
+    st.markdown(
+        '<div class="mm-vacio">'
+        '<h3>Falta al menos un criterio</h3>'
+        f'<p>{escape(datos["sin_conclusion"])}</p>'
+        '<p>Elegí un estilo, un artista o una canción de referencia, una década, un país, '
+        'un idioma o la opción de música local en el panel de la izquierda.</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+    with st.expander("Cómo llegamos acá"):
+        mostrar_traza(datos)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -412,6 +449,11 @@ else:
     datos = presentar(recomendar(entrada, CATALOGO), CATALOGO)
     recs = datos["recomendaciones"]
 
+if entrada is not None and datos["sin_conclusion"]:
+    # Regla R00: consulta sin criterios, el motor se detuvo antes de evaluar.
+    mostrar_sin_conclusion(datos)
+
+elif entrada is not None:
     if recs:
         cantidad = "1 canción" if len(recs) == 1 else f"{len(recs)} canciones"
         st.markdown(f'<div class="mm-titular">{cantidad} para vos</div>', unsafe_allow_html=True)

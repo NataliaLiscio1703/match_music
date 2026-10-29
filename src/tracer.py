@@ -17,6 +17,7 @@ from src.engine import REGLAS, normalizar
 
 # Nombre de cada nivel de la cadena de inferencia (para la explicación en pantalla).
 NIVELES = {
+    "0": "Nivel 0: validación de la consulta",
     "1A": "Nivel 1A: lectura de tus preferencias",
     "1B": "Nivel 1B: contexto musical deducido",
     "2": "Nivel 2: comparación con el catálogo",
@@ -44,6 +45,7 @@ EXTRAS_LEGIBLES = {
     "jazz": "Jazz",
     "cumbia": "Cumbia",
     "folklore": "Folklore",
+    "japon": "Japón",
 }
 
 
@@ -51,9 +53,10 @@ def mapa_legible(catalogo):
     """Diccionario {valor normalizado → valor legible} construido desde el catálogo."""
     mapa = dict(EXTRAS_LEGIBLES)
     for c in catalogo:
-        for campo in ("genero", "subgenero", "pais", "idioma"):
+        for campo in ("genero", "subgenero", "pais", "idioma", "artista", "titulo"):
             original = c[campo]
-            legible = original[:1].upper() + original[1:]
+            # Artistas y títulos se respetan tal cual (p. ej. "a-ha"); el resto se capitaliza.
+            legible = original if campo in ("artista", "titulo") else original[:1].upper() + original[1:]
             mapa.setdefault(normalizar(original), legible)
     return mapa
 
@@ -108,6 +111,7 @@ def presentar(resultado, catalogo):
         "estilos": estilos,
         "descartes": descartes,
         "sin_coincidencia": resultado["sin_coincidencia"],
+        "sin_conclusion": resultado.get("sin_conclusion"),
         "traza": traza,
     }
 

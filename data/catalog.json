@@ -1,6 +1,6 @@
 {
-  "version": "0.1",
-  "nota": "Catálogo de PRUEBA cargado manualmente por el Grupo A. Años = año de lanzamiento del álbum/sencillo original. Géneros y subgéneros pendientes de verificación contra las fuentes del Brief §9 (Spotify Global Music Dataset, Worldwide Music Artists Dataset, MGD).",
+  "version": "0.2",
+  "nota": "Catálogo de PRUEBA cargado manualmente por el Grupo A. Años = año de lanzamiento del álbum/sencillo original. Géneros y subgéneros pendientes de verificación contra las fuentes del Brief §9 (Spotify Global Music Dataset, Worldwide Music Artists Dataset, MGD). v0.2 (29/10/2026): C19–C34 agregadas para cubrir los casos de prueba CA-01 a CA-06 del Grupo B (reunión 2, 22/10/2026).",
   "canciones": [
     {"id": "C01", "titulo": "Persiana americana", "artista": "Soda Stereo", "genero": "rock", "subgenero": "new wave", "anio": 1986, "pais": "Argentina", "idioma": "español"},
     {"id": "C02", "titulo": "De música ligera", "artista": "Soda Stereo", "genero": "rock", "subgenero": "rock en español", "anio": 1990, "pais": "Argentina", "idioma": "español"},
@@ -19,6 +19,22 @@
     {"id": "C15", "titulo": "La Bicicleta", "artista": "Carlos Vives y Shakira", "genero": "pop", "subgenero": "pop latino", "anio": 2016, "pais": "Colombia", "idioma": "español"},
     {"id": "C16", "titulo": "Despacito", "artista": "Luis Fonsi ft. Daddy Yankee", "genero": "urbano latino", "subgenero": "reggaeton", "anio": 2017, "pais": "Puerto Rico", "idioma": "español"},
     {"id": "C17", "titulo": "Tusa", "artista": "Karol G y Nicki Minaj", "genero": "urbano latino", "subgenero": "reggaeton", "anio": 2019, "pais": "Colombia", "idioma": "español"},
-    {"id": "C18", "titulo": "Libertango", "artista": "Astor Piazzolla", "genero": "tango", "subgenero": "tango nuevo", "anio": 1974, "pais": "Argentina", "idioma": "instrumental"}
+    {"id": "C18", "titulo": "Libertango", "artista": "Astor Piazzolla", "genero": "tango", "subgenero": "tango nuevo", "anio": 1974, "pais": "Argentina", "idioma": "instrumental"},
+    {"id": "C19", "titulo": "Demoliendo hoteles", "artista": "Charly García", "genero": "rock", "subgenero": "rock nacional", "anio": 1984, "pais": "Argentina", "idioma": "español"},
+    {"id": "C20", "titulo": "Seguir viviendo sin tu amor", "artista": "Luis Alberto Spinetta", "genero": "rock", "subgenero": "rock nacional", "anio": 1986, "pais": "Argentina", "idioma": "español"},
+    {"id": "C21", "titulo": "Una luna de miel en la mano", "artista": "Virus", "genero": "rock", "subgenero": "new wave", "anio": 1985, "pais": "Argentina", "idioma": "español"},
+    {"id": "C22", "titulo": "Irresponsables", "artista": "Babasónicos", "genero": "rock", "subgenero": "rock alternativo", "anio": 2003, "pais": "Argentina", "idioma": "español"},
+    {"id": "C23", "titulo": "Soñé", "artista": "Zoé", "genero": "rock", "subgenero": "rock alternativo", "anio": 2003, "pais": "México", "idioma": "español"},
+    {"id": "C24", "titulo": "Crimen", "artista": "Gustavo Cerati", "genero": "rock", "subgenero": "pop rock", "anio": 2006, "pais": "Argentina", "idioma": "español"},
+    {"id": "C25", "titulo": "Just Can't Get Enough", "artista": "Depeche Mode", "genero": "pop", "subgenero": "synth-pop", "anio": 1981, "pais": "Reino Unido", "idioma": "inglés"},
+    {"id": "C26", "titulo": "Like a Virgin", "artista": "Madonna", "genero": "pop", "subgenero": "dance-pop", "anio": 1984, "pais": "Estados Unidos", "idioma": "inglés"},
+    {"id": "C27", "titulo": "Mujeres bellas y fuertes", "artista": "Él Mató a un Policía Motorizado", "genero": "indie", "subgenero": "indie rock", "anio": 2012, "pais": "Argentina", "idioma": "español"},
+    {"id": "C28", "titulo": "Vámonos de viaje", "artista": "Bandalos Chinos", "genero": "indie", "subgenero": "indie pop", "anio": 2018, "pais": "Argentina", "idioma": "español"},
+    {"id": "C29", "titulo": "Un día", "artista": "Juana Molina", "genero": "folk", "subgenero": "folktrónica", "anio": 2008, "pais": "Argentina", "idioma": "español"},
+    {"id": "C30", "titulo": "Gracias a la vida", "artista": "Mercedes Sosa", "genero": "folklore", "subgenero": "nueva canción", "anio": 1971, "pais": "Argentina", "idioma": "español"},
+    {"id": "C31", "titulo": "Black Dog", "artista": "Led Zeppelin", "genero": "rock", "subgenero": "hard rock", "anio": 1971, "pais": "Reino Unido", "idioma": "inglés"},
+    {"id": "C32", "titulo": "Smoke on the Water", "artista": "Deep Purple", "genero": "rock", "subgenero": "hard rock", "anio": 1972, "pais": "Reino Unido", "idioma": "inglés"},
+    {"id": "C33", "titulo": "Paranoid", "artista": "Black Sabbath", "genero": "metal", "subgenero": "heavy metal", "anio": 1970, "pais": "Reino Unido", "idioma": "inglés"},
+    {"id": "C34", "titulo": "Run to the Hills", "artista": "Iron Maiden", "genero": "metal", "subgenero": "heavy metal", "anio": 1982, "pais": "Reino Unido", "idioma": "inglés"}
   ]
 }

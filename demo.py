@@ -1,40 +1,37 @@
 """
-demo.py — Ejecuta casos de prueba sobre el motor desde consola (sin interfaz).
+demo.py — Ejecuta los casos de prueba del Grupo B (cliente) desde consola, sin interfaz.
 Uso (desde la raíz del repo):  python demo.py
 
-Los casos son PROVISORIOS del proveedor; se reemplazarán por los casos de
-prueba que entregue el Grupo B (Pautas §5.3 y §6.2).
+Los casos están definidos en casos_prueba.py (fuente: documento de casos de
+prueba del Grupo B, reunión 2, 22/10/2026). La misma batería, con la traza
+completa, se presenta en casos_cliente.ipynb.
 """
 
-from src.engine import recomendar
-
-CASOS = [
-    ("Rock de los 80", {"generos": ["Rock"], "epoca": "80s"}),
-    ("Música local en español", {"local": True, "idioma": "Español"}),
-    ("Reggaeton (contexto latino)", {"generos": ["Urbano latino"]}),
-    ("Subgénero puntual", {"generos": ["synth-pop"]}),
-    ("Sin coincidencia: tango en alemán", {"generos": ["Tango"], "idioma": "Alemán"}),
-    ("Sin criterios", {}),
-]
+from casos_prueba import CASOS, ejecutar
 
 
-def mostrar(nombre, entrada):
+def mostrar(caso):
     print("=" * 78)
-    print(f"CASO: {nombre}   entrada={entrada}")
-    r = recomendar(entrada)
+    print(f"{caso['id']} [{caso['prioridad']}] {caso['titulo']}   ({caso['requisitos']})")
+    print(f"  entrada : {caso['entrada']}")
+    print(f"  esperado: {caso['esperado']}")
+    r, checks, aprobado = ejecutar(caso)
+    if r["sin_conclusion"]:
+        print(f"  ⚠ {r['sin_conclusion']}")
     if r["sin_coincidencia"]:
         print(f"  ⚠ {r['sin_coincidencia']}")
     for rec in r["recomendaciones"]:
         print(f"  ♪ [{rec['puntaje']}] {rec['titulo']} — {rec['artista']} ({rec['anio']}, {rec['pais']})")
-        print(f"      motivos: {'; '.join(rec['motivos'])}")
         print(f"      cadena : {' → '.join(rec['cadena'])}")
-    if r["artistas"]:
-        print(f"  Artistas: {', '.join(r['artistas'])}")
-        print(f"  Estilos : {', '.join(r['estilos'])}")
     print(f"  Traza: {len(r['traza'])} disparos — reglas distintas: "
           f"{sorted({t['regla'] for t in r['traza']})}")
+    for descripcion, ok in checks:
+        print(f"    {'✔' if ok else '✘'} {descripcion}")
+    print(f"  RESULTADO: {'OK' if aprobado else 'NO OK'}")
+    return aprobado
 
 
 if __name__ == "__main__":
-    for nombre, entrada in CASOS:
-        mostrar(nombre, entrada)
+    resultados = [mostrar(c) for c in CASOS]
+    print("=" * 78)
+    print(f"Casos aprobados: {sum(resultados)} de {len(resultados)}")

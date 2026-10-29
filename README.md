@@ -1,13 +1,13 @@
 # Match Music — Sistema experto recomendador de música
 
-Sistema basado en conocimiento que recomienda **canciones, artistas y estilos musicales** según las preferencias del usuario (estilo, época, país, música local, idioma) y **explica cada recomendación** mostrando la cadena de reglas que la justifica. Es un recomendador, no un reproductor: no reproduce, descarga ni distribuye música.
+Sistema basado en conocimiento que recomienda **canciones, artistas y estilos musicales** según las preferencias del usuario (estilo, época, país, música local, idioma, o un artista o canción de referencia) y **explica cada recomendación** mostrando la cadena de reglas que la justifica. Es un recomendador, no un reproductor: no reproduce, descarga ni distribuye música.
 
 | | |
 |---|---|
 | **Materia** | Análisis de Datos II: Sistemas Expertos y Redes de Conocimiento (UNICABA, 2026.2) |
-| **Grupo autor (proveedor)** | Grupo A — _completar integrantes_ |
+| **Grupo autor (proveedor)** | Grupo A — Facundo Joaquín Olcese, Natalia Liscio, Andrés Carrión, Alan Uriel Bronsztein, Sebastián Flehr, Facundo Aranda |
 | **Grupo cliente** | Grupo B |
-| **App publicada** | _completar con la URL de Streamlit Cloud_ |
+| **App publicada** | https://match-music.streamlit.app/ |
 | **Repositorio** | https://github.com/NataliaLiscio1703/match_music |
 | **Motor de inferencia** | Experta 1.9.4 (encadenamiento hacia adelante), incluida en `experta/` |
 | **Interfaz** | Streamlit 1.65.0 |
@@ -32,6 +32,7 @@ Instalar y ejecutar usando el Python del entorno virtual (no hace falta activarl
 |---|---|---|
 | Instalar librerías | `.venv\Scripts\python.exe -m pip install -r requirements.txt` | `.venv/bin/python -m pip install -r requirements.txt` |
 | Casos de prueba por consola | `.venv\Scripts\python.exe demo.py` | `.venv/bin/python demo.py` |
+| Notebook de casos de prueba (opcional) | `.venv\Scripts\python.exe -m pip install notebook` y luego `.venv\Scripts\python.exe -m jupyter notebook casos_cliente.ipynb` | `.venv/bin/python -m pip install notebook` y luego `.venv/bin/python -m jupyter notebook casos_cliente.ipynb` |
 | Abrir la app | `.venv\Scripts\python.exe -m streamlit run app.py` | `.venv/bin/python -m streamlit run app.py` |
 
 La app se abre en http://localhost:8501. La primera vez, Streamlit puede pedir un email en la terminal: apretá **Enter** sin escribir nada. Para cerrarla, `Ctrl + C`.
@@ -73,6 +74,8 @@ match_music\
 │   ├── facts.py
 │   └── tracer.py
 ├── app.py
+├── casos_cliente.ipynb
+├── casos_prueba.py
 ├── demo.py
 ├── iniciar.bat
 ├── instalar.bat
@@ -89,7 +92,7 @@ Hacé **doble clic en `instalar.bat`**. Se abre una ventana negra que:
 3. Instala las librerías.
 4. Ejecuta los casos de prueba para verificar el motor.
 
-Al terminar tiene que aparecer, entre otras cosas, el caso **«Rock de los 80»** con 7 canciones (Bon Jovi, Soda Stereo, Guns N' Roses…) y al final **`=== Instalacion terminada ===`**. Apretá cualquier tecla para cerrar.
+Al terminar tienen que aparecer los ocho casos de prueba del cliente, la línea **`Casos aprobados: 8 de 8`** y al final **`=== Instalacion terminada ===`**. Apretá cualquier tecla para cerrar.
 
 > **Si Windows muestra «Windows protegió su PC»:** hacé clic en **«Más información»** y después en **«Ejecutar de todas formas»**. Aparece porque el archivo vino de internet. Si querés ver qué hace antes de ejecutarlo, abrilo con el Bloc de notas: son unas pocas líneas comentadas.
 
@@ -146,7 +149,7 @@ Experta es la librería del motor de inferencia. Su última versión (1.9.4) es 
 
 Por eso la carpeta `experta/` contiene el código fuente original de Experta 1.9.4, **sin modificaciones** y con su licencia (LGPL v3), y `requirements.txt` fija versiones modernas de `frozendict` y `schema`. Así la instalación es un único `pip install -r requirements.txt`, que es lo único que ejecuta Streamlit Community Cloud. Detalle en [`experta/VENDORED.md`](experta/VENDORED.md).
 
-Verificado en un entorno virtual limpio con Python 3.13: el motor ejecuta los 6 casos de `demo.py` con los resultados esperados y la app levanta sin errores.
+Verificado en un entorno virtual limpio con Python 3.13: el motor ejecuta los 8 casos del cliente de `demo.py` con los resultados esperados y la app levanta sin errores.
 
 ---
 
@@ -155,10 +158,12 @@ Verificado en un entorno virtual limpio con Python 3.13: el motor ejecuta los 6 
 | Archivo | Qué hace |
 |---|---|
 | `src/facts.py` | Define los tipos de hechos: preferencias, canciones, hechos derivados, coincidencias, recomendaciones. |
-| `src/engine.py` | **Base de reglas (27 reglas) y motor de inferencia.** No depende de la interfaz. |
+| `src/engine.py` | **Base de reglas (41 reglas) y motor de inferencia.** No depende de la interfaz. |
 | `src/tracer.py` | Convierte la traza del motor en texto legible. No contiene reglas. |
 | `app.py` | Interfaz Streamlit: recoge preferencias, llama al motor y muestra resultados y explicación. |
-| `demo.py` | Ejecuta los casos de prueba por consola, sin interfaz. |
+| `casos_prueba.py` | Casos de prueba CA-01 a CA-08 del Grupo B, con su resultado esperado y una verificación automática. No contiene reglas. |
+| `demo.py` | Ejecuta los casos de prueba del cliente por consola, sin interfaz. |
+| `casos_cliente.ipynb` | Notebook ya ejecutado con los casos del cliente: entrada, esperado, resultado, traza y verificación de cada uno. |
 | `data/catalog.json` | Catálogo de canciones (base de hechos). |
 | `experta/` | Código de Experta 1.9.4 incluido (ver arriba). No contiene reglas del sistema. |
 | `instalar.bat` / `iniciar.bat` | Instalación y apertura con doble clic en Windows. |
@@ -169,29 +174,45 @@ La base de reglas está separada de la interfaz: `app.py` solo usa la función `
 
 | Nivel | Reglas | Qué hace |
 |---|---|---|
-| 1A | R01–R06 | Lee las preferencias del usuario y las convierte en hechos derivados. |
-| 1B | R07–R10 | Deduce contexto musical (géneros afines, música latina, rock de los 80). |
-| 2 | R11–R21 | Compara cada canción con lo deducido: coincidencias y descartes. |
+| 0 | R00 | Si la consulta no trae ningún criterio, detiene el motor antes de evaluar el catálogo. |
+| 1A | R01–R06, R28–R29 | Lee las preferencias del usuario (y el artista o la canción de referencia) y las convierte en hechos derivados. |
+| 1B | R07–R10, R30–R34 | Deduce contexto musical: géneros afines, género que contiene al subgénero pedido, subgéneros vecinos, música latina, rock de los 80 y rasgos de la referencia. |
+| 2 | R11–R21, R35–R40 | Compara cada canción con lo deducido: coincidencias, similitud con la referencia y descartes. |
 | 3 | R22–R24 | Calcula el puntaje y decide si recomendar. |
 | 4 | R25–R26 | Deriva artistas y estilos a partir de las canciones recomendadas. |
 | Cierre | R27 | Si nada alcanzó el umbral, informa que no hay coincidencia suficiente. |
 
-Cadena más larga: `UserPreferences → R01 → R07 → R13 → R22 → R23 → R25`.
+R01–R27 son las reglas presentadas en la reunión 2 (22/10). R00 y R28–R40 se agregaron para resolver las observaciones del cliente en esa reunión (CA-02 artista base, CA-05 combinación sin resultados, CA-07 entrada vacía); se numeraron a continuación para no cambiar las referencias anteriores.
+
+Cadena más larga: `UserPreferences → R28 → R32 → R34 → R37 → R22 → R23 → R25` (artista de referencia → rasgos → estilos vecinos → coincidencia → puntaje → recomendación → artista recomendado).
 
 ### Trazabilidad
 
-Cada recomendación muestra los motivos de coincidencia y la cadena de reglas que la produjo. La traza completa (todas las reglas disparadas, agrupadas por nivel) se ve en la app y también la devuelve `recomendar()` en la clave `traza`. Cuando ninguna canción alcanza el umbral, la regla R27 informa: *«No se encontraron recomendaciones con coincidencia suficiente para los criterios seleccionados. Modifique o amplíe los criterios de búsqueda.»*
+Cada recomendación muestra los motivos de coincidencia y la cadena de reglas que la produjo. La traza completa (todas las reglas disparadas, agrupadas por nivel) se ve en la app y también la devuelve `recomendar()` en la clave `traza`. Cuando ninguna canción alcanza el umbral, la regla R27 informa: *«No se encontraron recomendaciones con coincidencia suficiente para los criterios seleccionados. Modifique o amplíe los criterios de búsqueda.»* Cuando la consulta no trae criterios, la regla R00 informa: *«Sin conclusión posible: Ingrese al menos un criterio (estilo, artista, década o país) para ejecutar la recomendación.»*
 
 ---
 
 ## Casos de prueba
 
-`demo.py` ejecuta 6 casos: Rock de los 80, música local en español, reggaeton (contexto latino), subgénero puntual (synth-pop) y dos casos sin coincidencia (tango en alemán y búsqueda sin criterios).
+`casos_prueba.py` contiene los 8 casos de prueba del Grupo B (documento de la reunión 2, 22/10/2026), con la entrada y el resultado esperado de cada ficha y una verificación automática del criterio de aceptación del cliente. Se ejecutan de dos formas:
 
-Son casos **provisorios del proveedor**; se reemplazan por los casos de prueba del Grupo B (Pautas §5.3 y §6.2).
+- `demo.py`: por consola, con el resultado OK / NO OK de cada caso.
+- `casos_cliente.ipynb`: notebook ya ejecutado (se puede leer directamente en GitHub) con las recomendaciones, la cadena de reglas de cada una, la traza por nivel y la cobertura de reglas.
+
+| Caso | Objetivo | Requisitos | Resultado |
+|---|---|---|---|
+| CA-01 | Rock nacional + Argentina | RF-01 / RF-03 | OK |
+| CA-02 | Artistas similares a Soda Stereo | RF-02 / RF-08 | OK |
+| CA-03 | Pop / synth-pop de los 80 en inglés | RF-04 | OK |
+| CA-04 | Indie / folk local en español | RF-06 / RF-07 | OK |
+| CA-05 | Hard rock británico de los 70 en inglés | RF-01 / RF-03 / RF-05 | OK |
+| CA-06 | Heavy metal de Japón de los años 20 (sin coincidencias) | RF-01 / RF-07 | OK |
+| CA-07 | Entrada vacía | RF-01 | OK |
+| CA-08 | Traza de inferencia completa | RF-08 | OK |
 
 ## Limitaciones conocidas
 
-- `data/catalog.json` es un **catálogo de prueba de 18 canciones** cargado manualmente. Géneros, subgéneros y relaciones entre estilos están pendientes de verificación contra las fuentes del Brief §9 (Spotify Global Music Dataset, Worldwide Music Artists Dataset, Music Genre Dataset).
-- Las tablas de conocimiento de `src/engine.py` (eras, géneros afines, país local) son valores preliminares a validar con el cliente.
+- `data/catalog.json` es un **catálogo de prueba de 34 canciones** cargado manualmente (las canciones C19–C34 se agregaron el 29/10 para cubrir los casos del cliente). Géneros, subgéneros y relaciones entre estilos están pendientes de verificación contra las fuentes del Brief §9 (Spotify Global Music Dataset, Worldwide Music Artists Dataset, Music Genre Dataset).
+- Las tablas de conocimiento de `src/engine.py` (eras, géneros afines, subgéneros vecinos, país local, pesos y umbral) son valores preliminares a validar con el cliente.
+- La búsqueda por artista o canción de referencia solo funciona con artistas y canciones del catálogo (se eligen de una lista en la interfaz).
 - Las recomendaciones solo pueden salir de canciones presentes en el catálogo.
