@@ -9,6 +9,7 @@ Sistema basado en conocimiento que recomienda **canciones, artistas y estilos mu
 | **Grupo cliente** | Grupo B |
 | **App publicada** | https://match-music.streamlit.app/ |
 | **Repositorio** | https://github.com/NataliaLiscio1703/match_music |
+| **Video de Presentación** | [https://drive.google.com/file/d/1FaqWBpbgb966lMh2NnFpBTmgk_eyau_C/view?usp=drive_link] |
 | **Motor de inferencia** | Experta 1.9.4 (encadenamiento hacia adelante), incluida en `experta/` |
 | **Interfaz** | Streamlit 1.65.0 |
 | **Versión de Python** | 3.13 (probado). Requiere 3.10 o superior |
